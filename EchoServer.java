@@ -62,7 +62,75 @@ public class EchoServer extends AbstractServer
 	  }
   }
   
+  private void commandHandler(String message) {
+	  if(message.equals("#quit")) {
+		  try {
+			close();
+			System.exit(0);
+		} catch (IOException e) {
+		}
+		  finally {
+			  System.exit(0);
+		  }
+		 return;
+	  }
+	  if(message.equals("#stop")) {
+		  stopListening();
+		  return;
+	  }
+	  if(message.equals("#close")) {
+		  try {
+			close();
+		  } catch (IOException e) {
+		  }
+		  finally {
+		  }
+		 return;
+	  }
+	  if(message.equals("#getport")) {
+		  serverUI.display(String.valueOf(getPort()));
+		  return;
+	  }
+	  if(message.equals("#start")) {
+		  if(isListening()) {
+			  serverUI.display("Server already listening");
+			  return;
+		  }
+		  try {
+			listen();
+		  } catch (IOException e) {
+		  }
+		  return;
+	  }
+	  
+	  String[] split = message.split(" ");
+	  if(split.length != 2) {
+		  serverUI.display("Unknown command");
+		  return;
+	  }
+	  
+	  if(split[0].equals("#setport")) {
+		  if(isListening()) {
+			  serverUI.display("You must stop listening to connections before changing the port number");
+			  return;
+		  }
+		  try {
+			  int new_port = Integer.parseInt(split[1]);
+			  setPort(new_port);
+		  }
+		  catch(NumberFormatException e) {
+			  serverUI.display("Port must be an integer");
+		  }
+		  return;
+	  }
+	  serverUI.display("Unknown command");
+  }
+  
   public void handleMessageFromUI(String message) {
+	  if(message.charAt(0) == '#') {
+		  commandHandler(message);
+		  return;
+	  }
 	  serverUI.display(message);
 	  this.sendToAllClients("SRV MESSAGE> " + message);
 	  
