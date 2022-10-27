@@ -58,6 +58,65 @@ public class ChatClient extends AbstractClient
   {
 	  clientUI.display(msg.toString());
   }
+  
+  private void commandHandler(String message) {
+	  if(message.equals("#quit")) {
+		  quit();
+	  }
+	  if(message.equals("#logoff")) {
+		  if(!isConnected()) {
+			  clientUI.display("You are already logged off");
+			  return;
+		  }
+		  try {
+			closeConnection();
+		   } catch (IOException e) {
+		   }
+		  return;
+	  }
+	  if(message.equals("#login")) {
+		  if(isConnected()) {
+			  clientUI.display("You are already logged in");
+			  return;
+		  }
+		  try {
+			  openConnection();
+		  } catch(Exception e) {
+			  
+		  }
+		  return;
+	  }
+	  if(message.equals("#getport")) {
+		 clientUI.display(String.valueOf(getPort()));
+		 return;
+	  }
+	  if(message.equals("#gethost")) {
+		  clientUI.display(getHost());
+		  return;
+	  }
+	  
+	  String[] split = message.split(" ");
+	  if(split.length != 2) {
+		  clientUI.display("Unknown command");
+		  return;
+	  }
+	  
+	  if(split[0].equals("#setport")) {
+		  try {
+			  int new_port = Integer.parseInt(split[1]);
+			  setPort(new_port);
+		  }
+		  catch(NumberFormatException e) {
+			  clientUI.display("Port must be an integer");
+		  }
+		  return;
+	  }
+	  if(split[0].equals("#sethost")) {
+		  setHost(split[1]);
+		  return;
+	  }
+	  clientUI.display("Unknown command");
+  }
 
   /**
    * This method handles all data coming from the UI            
@@ -66,6 +125,10 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String message)
   {
+	  if(message.charAt(0) == '#') {
+		  commandHandler(message);
+		  return;
+	  }
     try
     {
       sendToServer(message);
