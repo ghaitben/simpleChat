@@ -5,6 +5,7 @@
 
 import java.io.IOException;
 
+import common.ChatIF;
 import ocsf.server.*;
 
 /**
@@ -26,6 +27,8 @@ public class EchoServer extends AbstractServer
    */
   final public static int DEFAULT_PORT = 5555;
   
+  ChatIF serverUI;
+  
   //Constructors ****************************************************
   
   /**
@@ -36,6 +39,11 @@ public class EchoServer extends AbstractServer
   public EchoServer(int port) 
   {
     super(port);
+  }
+  
+  public EchoServer(int port, ChatIF serverUI) {
+	  super(port);
+	  this.serverUI = serverUI;
   }
   
   protected void clientConnected(ConnectionToClient client) {
@@ -52,6 +60,12 @@ public class EchoServer extends AbstractServer
 	  }catch(Exception ee) {
 		  
 	  }
+  }
+  
+  public void handleMessageFromUI(String message) {
+	  serverUI.display(message);
+	  this.sendToAllClients("SRV MESSAGE> " + message);
+	  
   }
 
   
