@@ -44,7 +44,13 @@ public class ServerConsole implements ChatIF {
 	  }
 
 	public static void main(String[] args) {
-		ServerConsole console = new ServerConsole(EchoServer.DEFAULT_PORT);
+		int port = EchoServer.DEFAULT_PORT;
+		try {
+			port = Integer.parseInt(args[0]);
+		}
+		catch(Exception e) {
+		}
+		ServerConsole console = new ServerConsole(port);
 		console.accept();
 	}
 

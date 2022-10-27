@@ -51,7 +51,7 @@ public class EchoServer extends AbstractServer
   }
   
   synchronized protected void clientDisconnected(ConnectionToClient client) {
-	  System.out.println("Client disconected!");
+	  System.out.println(client.getInfo("loginId") + " disconected!");
   }
   
   synchronized protected void clientException(ConnectionToClient client, Throwable e) {
@@ -148,11 +148,11 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
+	  System.out.println("Message received: " + msg + " from " + client.getInfo("loginId"));
+	  
+	  // this is very ugly, sorry :/.
 	  if(!(msg instanceof String) || !(((String) msg).startsWith("#login"))) {
-		  int loginId = (int) client.getInfo("loginId");
-		  msg = "(login : " + loginId + ") " + msg;
-		  System.out.println("Message received: " + msg + " from " + client);
-		  this.sendToAllClients(msg);
+		  this.sendToAllClients("(id: " + client.getInfo("loginId") + ") " + msg);
 		  return;
 	  }
 	  // message starting with #login
@@ -163,10 +163,20 @@ public class EchoServer extends AbstractServer
 		  	client.close();
 		  }
 		  catch(Exception ee) {}
+		  return;
+	  }
+	  if(split[1].equals("-1")) {
+		  try {
+		  client.sendToClient("Error no loginId specified, Connection aborted");
+		  client.close();
+		  }
+		  catch(Exception eee) {}
 	  }
 	  else {
 		  int loginId = Integer.parseInt(split[1]);
 		  client.setInfo("loginId", loginId);
+		  System.out.println(loginId + " has logged on");
+		  this.sendToAllClients(loginId + " has logged on");
 	  }
   }
     
