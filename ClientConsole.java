@@ -134,6 +134,9 @@ public class ClientConsole implements ChatIF
     catch(ArrayIndexOutOfBoundsException e) {
     	custom_port = DEFAULT_PORT;
     }
+    catch(NumberFormatException e) {
+    	custom_port = DEFAULT_PORT;
+    }
     ClientConsole chat= new ClientConsole(host, custom_port);
     chat.accept();  //Wait for console data
   }
