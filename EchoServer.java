@@ -3,6 +3,8 @@
 // license found at www.lloseng.com 
 
 
+import java.io.IOException;
+
 import ocsf.server.*;
 
 /**
@@ -34,6 +36,22 @@ public class EchoServer extends AbstractServer
   public EchoServer(int port) 
   {
     super(port);
+  }
+  
+  protected void clientConnected(ConnectionToClient client) {
+	  System.out.println("Client connected !");
+  }
+  
+  synchronized protected void clientDisconnected(ConnectionToClient client) {
+	  System.out.println("Client disconected!");
+  }
+  
+  synchronized protected void clientException(ConnectionToClient client, Throwable e) {
+	  try {
+		  client.close();
+	  }catch(Exception ee) {
+		  
+	  }
   }
 
   

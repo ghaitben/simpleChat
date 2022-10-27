@@ -56,7 +56,7 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromServer(Object msg) 
   {
-    clientUI.display(msg.toString());
+	  clientUI.display(msg.toString());
   }
 
   /**
@@ -76,6 +76,15 @@ public class ChatClient extends AbstractClient
         ("Could not send message to server.  Terminating client.");
       quit();
     }
+  }
+  
+  protected void connectionClosed() {
+	  clientUI.display("Exiting.");
+  }
+  
+  protected void connectionException(Exception e) {
+	  System.out.println("Server closed");
+	  quit();
   }
   
   /**
