@@ -148,8 +148,26 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+	  if(!(msg instanceof String) || !(((String) msg).startsWith("#login"))) {
+		  int loginId = (int) client.getInfo("loginId");
+		  msg = "(login : " + loginId + ") " + msg;
+		  System.out.println("Message received: " + msg + " from " + client);
+		  this.sendToAllClients(msg);
+		  return;
+	  }
+	  // message starting with #login
+	  String[] split = ((String) msg).split(" ");
+	  if(client.getInfo("loginId") != null) {
+		  try {
+			client.sendToClient("#login command is not allowed, disconnecting you now.");
+		  	client.close();
+		  }
+		  catch(Exception ee) {}
+	  }
+	  else {
+		  int loginId = Integer.parseInt(split[1]);
+		  client.setInfo("loginId", loginId);
+	  }
   }
     
   /**

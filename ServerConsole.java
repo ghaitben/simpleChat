@@ -22,7 +22,7 @@ public class ServerConsole implements ChatIF {
 			server.listen();
 		}
 		catch(Exception e) {
-			System.out.println("ERROR");
+			System.out.println("Another process is listening to the port");
 			return;
 		}
 	    try

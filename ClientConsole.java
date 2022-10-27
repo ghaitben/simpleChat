@@ -3,8 +3,8 @@
 // license found at www.lloseng.com 
 
 import java.io.*;
+import java.util.Random;
 import java.util.Scanner;
-
 import client.*;
 import common.*;
 
@@ -50,11 +50,11 @@ public class ClientConsole implements ChatIF
    * @param host The host to connect to.
    * @param port The port to connect on.
    */
-  public ClientConsole(String host, int port) 
+  public ClientConsole(int loginId, String host, int port) 
   {
     try 
     {
-      client= new ChatClient(host, port, this);
+      client= new ChatClient(loginId, host, port, this);
       
       
     } 
@@ -131,13 +131,11 @@ public class ClientConsole implements ChatIF
     try {
     	custom_port = Integer.parseInt(args[1]);
     }
-    catch(ArrayIndexOutOfBoundsException e) {
+    catch(Exception e) {
     	custom_port = DEFAULT_PORT;
     }
-    catch(NumberFormatException e) {
-    	custom_port = DEFAULT_PORT;
-    }
-    ClientConsole chat= new ClientConsole(host, custom_port);
+    int loginId = (new Random()).nextInt(Integer.MAX_VALUE);
+    ClientConsole chat= new ClientConsole(loginId, host, custom_port);
     chat.accept();  //Wait for console data
   }
 }
